@@ -39,8 +39,10 @@ func main() {
 
 func countLines(f *os.File, filename string, lineRefs map[string][]string) {
 	input := bufio.NewScanner(f)
+	line := 1
 	for input.Scan() {
-		lineRefs[input.Text()] = append(lineRefs[input.Text()], filename)
+		lineRefs[input.Text()] = append(lineRefs[input.Text()], fmt.Sprintf("%s:%d", filename, line))
+		line++
 	}
 	// NOTE: ignoring potential errors from input.Err()
 }
