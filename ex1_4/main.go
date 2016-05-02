@@ -18,7 +18,7 @@ func main() {
 	lineRefs := make(map[string][]string)
 	files := os.Args[1:]
 	if len(files) == 0 {
-		countLines(os.Stdin, "stdin", lineRefs)
+		lookForDuplicateLines(os.Stdin, "stdin", lineRefs)
 	} else {
 		for _, arg := range files {
 			f, err := os.Open(arg)
@@ -26,10 +26,11 @@ func main() {
 				fmt.Fprintf(os.Stderr, "dup2: %v\n", err)
 				continue
 			}
-			countLines(f, arg, lineRefs)
+			lookForDuplicateLines(f, arg, lineRefs)
 			f.Close()
 		}
 	}
+
 	for key, value := range lineRefs {
 		if len(value) > 1 {
 			fmt.Println(key, value)
@@ -37,7 +38,7 @@ func main() {
 	}
 }
 
-func countLines(f *os.File, filename string, lineRefs map[string][]string) {
+func lookForDuplicateLines(f *os.File, filename string, lineRefs map[string][]string) {
 	input := bufio.NewScanner(f)
 	line := 1
 	for input.Scan() {
